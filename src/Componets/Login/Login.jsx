@@ -2,7 +2,7 @@
 import React,{ useContext, useState } from 'react';
 // import app from '../../Firebase/Firebase.inti';
 // import app from '../../firebase/firebase.inti';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/UserContext';
 
 
@@ -10,10 +10,15 @@ import { AuthContext } from '../../Context/UserContext';
 
 const Login = () => {
           
-  const {loginUser} = useContext(AuthContext)
+  const {loginUser,resetPassword} = useContext(AuthContext)
 
            const [error,setError]=useState(null)
            const[success,setSuccess]=useState(false)
+           const [userEmail,setUserEmail]=useState('')
+
+           const navigate =useNavigate();
+           const location =useLocation();
+           const from =location.state?.form?.pathname ||'/'
 
           
         const handleLogin=(event) =>{
@@ -22,22 +27,43 @@ const Login = () => {
                      const form =event.target;
                      const email =form.email.value;
                     const password =form.password.value;
-                    loginUser(email,password )
+                    
+                    loginUser(email, password )
                     .then(result=>{
                       const user =result.user;
                       console.log(result);
+                      form.reset();
+                      navigate(from,{ replace: true})
                     })
                     .catch(error=>{
-                      console.log(error);
+                      console.log(error)
                     })
+          
+          }
+          const handleEmailBlur=(event)=>{
+             const email =event.target.value;
+             console.log(email);
+             setUserEmail(email) 
+          }  
+          const handleForgetPassword=()=>{
+            if(!userEmail){
+              alert('Please enter the email')
+              return
               
+            }
+            console.log(userEmail);
+            
+            resetPassword(userEmail)
+            .then(() => {
+              alert('please check email and reset the password')
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              // ..
+            });
+            
 
-                
-
-
-                  
-
-        
           }
 
     
@@ -51,18 +77,13 @@ const Login = () => {
                       <div className="card shrink-0 w-96 max-w-sm shadow-2xl bg-base-100">
                         
                         <form onSubmit={handleLogin}className="card-body">
-                          {/* <div className="form-control">
-                            <label className="label">
-                              <span className="label-text"> Full Name </span>
-                            </label>
-                            <input type="text" placeholder="Full Name" name='fullName'className="input input-bordered" required />
-                          </div> */}
+                         
         
                           <div className="form-control">
                             <label className="label">
                               <span className="label-text">Email</span>
                             </label>
-                            <input type="email" name='email'placeholder="email" className="input input-bordered" required />
+                            <input onBlur={handleEmailBlur} type="email" name='email'placeholder="email" className="input input-bordered" required />
                           </div>
         
                           <div className="form-control">
@@ -70,9 +91,14 @@ const Login = () => {
                               <span className="label-text">Password</span>
                             </label>
                             <input type="password"name='password' placeholder="password" className="input input-bordered" required />
+
+                            <label className="label">
+                            <button onClick={handleForgetPassword} className="label-text-alt link link-hover">Forget Password ? Please Reset Password </button>
+                            </label>
+
                             <label className="label">
                             <Link to='/register'className="label-text-alt link link-hover">Dont have an account?please Register </Link>
-                    </label>
+                            </label>
                           </div>
                              {
                                <p className='text-red-500'>{error}</p>

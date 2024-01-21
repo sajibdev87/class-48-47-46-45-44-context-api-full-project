@@ -8,10 +8,11 @@ import { AuthContext } from '../../Context/UserContext';
 
 
 const Registration = () => {
-  const {createUser,googleLogin} =useContext(AuthContext)
+  const {createUser,googleLogin,verifyEmail,updateUserName } =useContext(AuthContext)
 
    const[success,setSuccess]=useState(false)
-   const [error,setError]=useState(null)
+   const [error,setError]=useState(null);
+   const [passwordError,setPasswordError]=useState('')
 
       const handleRegistration =(event)=>{
          event.preventDefault();
@@ -19,9 +20,28 @@ const Registration = () => {
       const name =form.fullName.value;
       const email =form.email.value;
       const password =form.password.value;
+      if(!/(?=.*?[A-Z]*[A-Z])/.test(password)){
+        setPasswordError('password shoud be  Tow Uppercase')
+        return
+
+      }
+      if(!/(?=.*?[#?!@$%^&*-])/.test(password)){
+        setPasswordError('password shoud be Special Characters  Uppercase # ? ! @ $ % ^ & *')
+        return
+
+      }
+      if(password.length <6){
+        setPasswordError('password should be more than six Characters')
+        return
+
+      }
+      setPasswordError('')
+
       createUser(email,password)
       .then(result=>{
         console.log(result);
+        verifyEmail()
+        updateUserName (name)
       })
       .catch(error=>{
         console.log(error);
@@ -72,6 +92,7 @@ const Registration = () => {
                       <Link to='/login'className="label-text-alt link link-hover">Already have an account?please Login </Link>
                     </label>
                   </div>
+                  <p className='text-red-500'>{passwordError}</p>
                   {
                     success && <p className='text-green-500'>Successfully Register Done</p>
                   }

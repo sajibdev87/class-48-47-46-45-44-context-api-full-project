@@ -3,6 +3,8 @@ import Main from "../Layout/Main";
 import Home from "../Componets/Home/Home";
 import Registration from "../Componets/Registration/Registration";
 import Login from "../Componets/Login/Login";
+import PrivetRoute from "./PrivetRoute";
+import About from "../Componets/About/About";
 
 
 export const router= createBrowserRouter([
@@ -12,11 +14,15 @@ export const router= createBrowserRouter([
                     children:[
                               {
                                  path:'/',
-                                 element:<Home></Home>         
+                                 element:<PrivetRoute> <Home></Home> </PrivetRoute>       
+                              },
+                              {
+                                 path:'/about',
+                                 element:<PrivetRoute> <About></About> </PrivetRoute>       
                               },
                               {
                                         path:'/register',
-                                        element:<Registration></Registration>
+                                        element:<Registration><About></About></Registration>
                               },
                               {
                                         path:'/login',

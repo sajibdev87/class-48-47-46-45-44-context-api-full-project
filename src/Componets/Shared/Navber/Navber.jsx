@@ -11,9 +11,15 @@ const Navber = () => {
  
    const menuItems = <React.Fragment>
       <li><Link to="/">Home</Link></li>
-      {/* <li><Link to="/product">Products</Link></li> */}
-      <li><Link to="/login">Login</Link></li>
-      {/* <li><Link to="/register">{name}</Link></li> */}
+      <li><Link to="/about">About</Link></li>
+     {
+     ! user && <>
+        <li><Link to="/login">Login</Link></li>
+      <li><Link to="/register">Registration</Link></li>
+
+      </>
+     }
+   
    </React.Fragment>
           return (
             <div className=" bg-drak-200 ">
@@ -49,14 +55,14 @@ const Navber = () => {
              <li>
              <a className="justify-between">
               {user?.displayName}
-              <span className="badge">New</span>
+              <span className="badge">{user?.displayName}</span>
               </a>
               </li>
             {user && <li><a>{user?.email}</a></li>}
             {
               user&& <li><button onClick={handleLogOut}>Logout</button></li>
             }
-            </ul>
+            </ul>  
              </div>
              </div> 
             
